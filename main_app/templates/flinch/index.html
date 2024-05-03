@@ -1,8 +1,23 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Flinches</h1>
 <ul>
-  {% for cat in cats %}
-  <li>{{ cat.name }} - {{ cat.breed }}</li>
+  {% for flinch in flinches %}
+  <div class="card">
+    <!-- Add this single line below -->
+    <a href="{% url 'detail' flinch.id %}">
+      <div class="card-content">
+        <span class="card-title">{{ flinch.name }}</span>
+        <p>Breed: {{ flinch.breed }}</p>
+        <p>Description: {{ flinch.description|linebreaks }}</p>
+        {% if flinch.age > 0 %}
+        <p>Age: {{ flinch.age }}</p>
+        {% else %}
+        <p>Age: Baby</p>
+        {% endif %}
+      </div>
+      <!-- Add the following one as well -->
+    </a>
+  </div>
   {% endfor %}
 </ul>
 {% endblock %}
