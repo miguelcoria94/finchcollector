@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Cat Collector</title>
+    <title>Flinch Collector</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -28,6 +28,8 @@
             <li><a href="{% url 'about' %}">About</a></li>
             <li><a href="{% url 'flinch_create' %}">Add a Flinch</a></li>
             <li><a href="{% url 'index' %}">View all my finches</a></li>
+            <li><a href="{% url 'toys_create' %}">Add a Toy</a></li>
+            <li><a href="{% url 'toys_index' %}">View All Toys</a></li>
           </ul>
         </div>
       </nav>
@@ -38,11 +40,9 @@
         All Rights Reserved, &copy; 2021 Cat Collector &nbsp;
       </div>
     </footer>
-
- 
   </body>
 
-   <script>
+  <script>
     const dateEl = document.getElementById("id_date");
     // M is Materialize's global variable
     M.Datepicker.init(dateEl, {
@@ -52,7 +52,7 @@
       autoClose: true,
     });
 
-    const selectEl = document.getElementById('id_meal');
-  M.FormSelect.init(selectEl);
+    const selectEl = document.getElementById("id_meal");
+    M.FormSelect.init(selectEl);
   </script>
 </html>

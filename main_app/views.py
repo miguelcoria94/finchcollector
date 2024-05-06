@@ -3,6 +3,8 @@ from .models import Flinch
 from .forms import FeedingForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse, HttpResponseRedirect
+from .models import Toy
+from django.views.generic import ListView, DetailView
 
 
 # Create your views here.
@@ -20,7 +22,17 @@ def flinch_index(request):
 def flinch_detail(request, flinch_id):
   flinch = Flinch.objects.get(id=flinch_id)
   feeding_form = FeedingForm()
-  return render(request, 'flinch/details.html', { 'flinch': flinch, 'feeding_form': feeding_form })
+  id_list = flinch.toys.all().values_list('id')
+  toys_that_flinch_doesnt_have = Toy.objects.exclude(id__in=id_list)
+  return render(request, 'flinch/details.html', { 'flinch': flinch, 'feeding_form': feeding_form, 'toys': toys_that_flinch_doesnt_have})
+
+def assoc_toy(request, flinch_id, toy_id):
+  Flinch.objects.get(id=flinch_id).toys.add(toy_id)
+  return redirect('detail', flinch_id=flinch_id)
+
+def unassoc_toy(request, flinch_id, toy_id):
+  Flinch.objects.get(id=flinch_id).toys.remove(toy_id)
+  return redirect('detail', flinch_id=flinch_id)
 
 class FlinchCreate(CreateView):
   model = Flinch
@@ -48,3 +60,22 @@ def add_feeding(request, flinch_id):
     new_feeding.flinch_id = flinch_id
     new_feeding.save()
   return redirect('detail', flinch_id=flinch_id)
+
+
+class ToyList(ListView):
+  model = Toy
+
+class ToyDetail(DetailView):
+  model = Toy
+
+class ToyCreate(CreateView):
+  model = Toy
+  fields = '__all__'
+
+class ToyUpdate(UpdateView):
+  model = Toy
+  fields = ['name', 'color']
+
+class ToyDelete(DeleteView):
+  model = Toy
+  success_url = '/toys'
