@@ -1,5 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Flinch
+from .forms import FeedingForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.http import HttpResponse, HttpResponseRedirect
+
 
 # Create your views here.
 
@@ -15,4 +19,32 @@ def flinch_index(request):
 
 def flinch_detail(request, flinch_id):
   flinch = Flinch.objects.get(id=flinch_id)
-  return render(request, 'flinch/detail.html', { 'flinch': flinch })
+  feeding_form = FeedingForm()
+  return render(request, 'flinch/details.html', { 'flinch': flinch, 'feeding_form': feeding_form })
+
+class FlinchCreate(CreateView):
+  model = Flinch
+  success_url = '/flinch/{id}'
+  fields = '__all__'
+
+class FlinchUpdate(UpdateView):
+    model = Flinch
+    success_url = '/flinch/{id}'
+    fields = ['breed', 'description', 'age']
+
+class FlinchDelete(DeleteView):
+    model = Flinch
+    success_url = '/flinch'
+# Path: main_app/views.py
+
+def add_feeding(request, flinch_id):
+  # create a ModelForm instance using the data in request.POST
+  form = FeedingForm(request.POST)
+  # validate the form
+  if form.is_valid():
+    # don't save the form to the db until it
+    # has the flinch_id assigned
+    new_feeding = form.save(commit=False)
+    new_feeding.flinch_id = flinch_id
+    new_feeding.save()
+  return redirect('detail', flinch_id=flinch_id)
